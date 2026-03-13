@@ -6,26 +6,35 @@
 
 <body>
 
-<h2>Telegram Verification</h2>
+<h2>Device Verification</h2>
+
+<button onclick="verify()">Verify Device</button>
 
 <script>
 
 const params = new URLSearchParams(window.location.search)
 const uid = params.get("uid")
 
-if(!uid){
- document.body.innerHTML="User ID missing"
-}
+function verify(){
 
-fetch("/api/verify?uid="+uid)
-.then(res=>res.json())
-.then(data=>{
- document.body.innerHTML = `
- <h3>Verification Successful</h3>
- <p>User: ${data.user}</p>
- <p>Device ID: ${data.device}</p>
- `
-})
+ fetch("/api/verify?uid="+uid)
+ .then(r=>r.json())
+ .then(data=>{
+
+  if(data.status=="ok"){
+   document.body.innerHTML =
+   `<h3>Verified ✅</h3>
+   <a href="https://t.me/YOUR_BOT_USERNAME?start=verified">Back to Bot</a>`
+  }
+
+  else{
+   document.body.innerHTML =
+   `<h3>Same Device Detected ❌</h3>`
+  }
+
+ })
+
+}
 
 </script>
 
