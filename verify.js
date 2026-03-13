@@ -1,27 +1,30 @@
-let verified = {}
+let devices = {}
 
-export default function handler(req, res) {
+export default function handler(req, res){
 
- const uid = req.query.uid
- const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
- const agent = req.headers['user-agent']
+const uid = req.query.uid
+const fp = req.query.fp
 
- const device = ip + "_" + agent
+if(!uid || !fp){
+res.json({status:"error"})
+return
+}
 
- if(!uid){
-  res.status(400).send("UID missing")
-  return
- }
+for(let user in devices){
 
- for (let u in verified){
-  if(verified[u] === device && u !== uid){
-   verified[uid] = "blocked"
-   res.json({status:"blocked"})
-   return
-  }
- }
+if(devices[user] === fp && user !== uid){
 
- verified[uid] = device
+devices[uid] = "blocked"
 
- res.json({status:"ok"})
+res.json({status:"blocked"})
+return
+
+}
+
+}
+
+devices[uid] = fp
+
+res.json({status:"verified"})
+
 }
