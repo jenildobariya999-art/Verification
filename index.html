@@ -6,9 +6,9 @@
 
 <body>
 
-<h2>Device Verification</h2>
+<h2>Verify Your Device</h2>
 
-<button onclick="verify()">Verify Device</button>
+<button onclick="verify()">Verify</button>
 
 <p id="msg"></p>
 
@@ -29,10 +29,10 @@ fetch("/api/verify?uid="+uid+"&fp="+btoa(fingerprint()))
 
 .then(data=>{
 
-if(data.status=="verified"){
+if(data.status==="verified"){
 
 document.getElementById("msg").innerHTML =
-`Verified ✅ <br>
+`<h3>Verified ✅</h3>
 <a href="https://t.me/YOUR_BOT_USERNAME?start=verified">
 Back To Bot
 </a>`
@@ -42,7 +42,7 @@ Back To Bot
 else{
 
 document.getElementById("msg").innerHTML =
-"Same Device Detected ❌"
+"<h3>Same Device Detected ❌</h3>"
 
 }
 
