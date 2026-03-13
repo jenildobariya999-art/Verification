@@ -1,45 +1,21 @@
-<script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Verification</title>
+</head>
+
+<body>
+
+<h2>Verification Page</h2>
+
+<p id="uid"></p>
 
 <script>
-
 const params = new URLSearchParams(window.location.search)
 const uid = params.get("uid")
 
-async function verify(){
-
-const fp = await FingerprintJS.load()
-const result = await fp.get()
-
-const visitorId = result.visitorId
-
-fetch("/api/verify?uid="+uid+"&fp="+visitorId)
-
-.then(res => res.json())
-
-.then(data => {
-
-if(data.status=="verified"){
-
-document.body.innerHTML =
-`Verified ✅
-<br>
-<a href="https://t.me/YOUR_BOT_USERNAME?start=verified">
-Back to Bot
-</a>`
-
-}
-
-else{
-
-document.body.innerHTML =
-"Same Device Detected ❌"
-
-}
-
-})
-
-}
-
-verify()
-
+document.getElementById("uid").innerText = "User ID: " + uid
 </script>
+
+</body>
+</html>
