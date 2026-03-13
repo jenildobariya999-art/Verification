@@ -1,47 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Device Verification</title>
-</head>
-
-<body>
-
-<h2>Verify Your Device</h2>
-
-<button onclick="verify()">Verify Device</button>
-
-<p id="msg"></p>
+<script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
 
 <script>
-
-function generateFingerprint(){
-
-return (
-navigator.userAgent +
-navigator.platform +
-screen.width +
-screen.height +
-navigator.language
-)
-
-}
 
 const params = new URLSearchParams(window.location.search)
 const uid = params.get("uid")
 
-function verify(){
+async function verify(){
 
-const fingerprint = generateFingerprint()
+const fp = await FingerprintJS.load()
+const result = await fp.get()
 
-fetch("/api/verify?uid="+uid+"&fp="+btoa(fingerprint))
+const visitorId = result.visitorId
+
+fetch("/api/verify?uid="+uid+"&fp="+visitorId)
+
 .then(res => res.json())
+
 .then(data => {
 
-if(data.status === "verified"){
+if(data.status=="verified"){
 
-document.getElementById("msg").innerHTML =
-`<h3>Verified ✅</h3>
-<a href="https://t.me/Testing0011_ibot?start=verified">
+document.body.innerHTML =
+`Verified ✅
+<br>
+<a href="https://t.me/YOUR_BOT_USERNAME?start=verified">
 Back to Bot
 </a>`
 
@@ -49,8 +31,8 @@ Back to Bot
 
 else{
 
-document.getElementById("msg").innerHTML =
-`<h3>Same Device Detected ❌</h3>`
+document.body.innerHTML =
+"Same Device Detected ❌"
 
 }
 
@@ -58,7 +40,6 @@ document.getElementById("msg").innerHTML =
 
 }
 
-</script>
+verify()
 
-</body>
-</html>
+</script>
