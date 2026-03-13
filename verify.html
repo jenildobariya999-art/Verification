@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Device Verification</title>
+</head>
+
+<body>
+
+<h2>Verify Your Device</h2>
+
+<button onclick="verify()">Verify Device</button>
+
+<p id="msg"></p>
+
+<script>
+
+function generateFingerprint(){
+
+return (
+navigator.userAgent +
+navigator.platform +
+screen.width +
+screen.height +
+navigator.language
+)
+
+}
+
+const params = new URLSearchParams(window.location.search)
+const uid = params.get("uid")
+
+function verify(){
+
+const fingerprint = generateFingerprint()
+
+fetch("/api/verify?uid="+uid+"&fp="+btoa(fingerprint))
+.then(res => res.json())
+.then(data => {
+
+if(data.status === "verified"){
+
+document.getElementById("msg").innerHTML =
+`<h3>Verified ✅</h3>
+<a href="https://t.me/Testing0011_ibot?start=verified">
+Back to Bot
+</a>`
+
+}
+
+else{
+
+document.getElementById("msg").innerHTML =
+`<h3>Same Device Detected ❌</h3>`
+
+}
+
+})
+
+}
+
+</script>
+
+</body>
+</html>
