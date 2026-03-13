@@ -15,7 +15,6 @@ for(let user in devices){
 if(devices[user] === fp && user !== uid){
 
 devices[uid] = "blocked"
-
 res.json({status:"blocked"})
 return
 
