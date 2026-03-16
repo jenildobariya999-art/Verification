@@ -1,41 +1,61 @@
-function canvasFingerprint(){
- let canvas=document.createElement("canvas")
- let ctx=canvas.getContext("2d")
- ctx.font="14px Arial"
- ctx.fillText("verify",2,2)
- return canvas.toDataURL()
+let bar=document.getElementById("bar")
+
+let percent=0
+
+let interval=setInterval(()=>{
+
+percent+=5
+
+bar.style.width=percent+"%"
+
+if(percent>=100){
+
+clearInterval(interval)
+
+verify()
+
+}
+
+},200)
+
+function fingerprint(){
+
+return navigator.userAgent+
+screen.width+
+screen.height+
+navigator.language
+
 }
 
 function verify(){
 
- let params=new URLSearchParams(window.location.search)
+let params=new URLSearchParams(window.location.search)
 
- let uid=params.get("uid")
+let uid=params.get("uid")
 
- let fingerprint=
- navigator.userAgent+
- screen.width+
- screen.height+
- navigator.language+
- canvasFingerprint()
+fetch("http://YOUR_SERVER_IP:8000/api_verify",{
 
- fetch("http://YOUR_SERVER_IP:8000/api_verify",{
+method:"POST",
 
- method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
 
- headers:{
- "Content-Type":"application/json"
- },
+body:JSON.stringify({
 
- body:JSON.stringify({
- uid:uid,
- fingerprint:fingerprint
- })
+uid:uid,
 
- })
- .then(r=>r.text())
- .then(data=>{
- document.body.innerHTML=data
- })
+fingerprint:fingerprint()
+
+})
+
+})
+
+.then(r=>r.text())
+.then(data=>{
+
+document.getElementById("status").innerHTML=data
+
+})
 
 }
