@@ -52,7 +52,7 @@ if(data.status=="success"){
 
 document.body.innerHTML=`
 <h2>Verification Successful</h2>
-<a href="https://t.me/Testing0011_ibot">
+<a href="https://t.me/Testing0011_ibot?start=">
 <button>Back to Bot</button>
 </a>
 `
@@ -61,7 +61,7 @@ document.body.innerHTML=`
 
 document.body.innerHTML=`
 <h2>Verification Failed</h2>
-<a href="https://t.me/Testing0011_ibot">
+<a href="https://t.me/Testing0011_ibot?start=">
 <button>Back to Bot</button>
 </a>
 `
