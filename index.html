@@ -1,82 +1,50 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Device Verification</title>
+<title>Verification</title>
 
 <style>
 
 body{
 background:#0b1623;
-font-family:sans-serif;
 color:white;
+font-family:sans-serif;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-margin:0;
 }
 
 .card{
-
-background:#101f33;
+background:#10223b;
 padding:40px;
 border-radius:20px;
 text-align:center;
 width:300px;
-box-shadow:0 0 20px rgba(0,0,0,0.5);
-
-}
-
-.icon{
-
-font-size:70px;
-margin-bottom:20px;
-
-}
-
-.title{
-
-font-size:24px;
-font-weight:bold;
-
-}
-
-.subtitle{
-
-color:#9db3d1;
-margin-top:5px;
-margin-bottom:20px;
-
-}
-
-.progress{
-
-background:#1f3552;
-height:10px;
-border-radius:10px;
-overflow:hidden;
-
 }
 
 .bar{
+height:10px;
+background:#1c3558;
+border-radius:10px;
+overflow:hidden;
+margin-top:20px;
+}
 
+.progress{
 height:10px;
 width:0%;
 background:#3fa9ff;
-transition:width 0.4s;
-
 }
 
-.status{
-
-margin-top:10px;
-color:#7fa3d4;
-font-size:14px;
-
+button{
+margin-top:20px;
+padding:10px 20px;
+border:none;
+background:#3fa9ff;
+color:white;
+border-radius:8px;
 }
 
 </style>
@@ -87,19 +55,13 @@ font-size:14px;
 
 <div class="card">
 
-<div class="icon">🔍</div>
+<h2>Verifying Device</h2>
 
-<div class="title">Verifying Device</div>
-
-<div class="subtitle">Establishing secure handshake...</div>
-
-<div class="progress">
-<div class="bar" id="bar"></div>
+<div class="bar">
+<div class="progress" id="bar"></div>
 </div>
 
-<div class="status" id="status">
-Analysis in progress
-</div>
+<div id="status">Analysis in progress</div>
 
 </div>
 
