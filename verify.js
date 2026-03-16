@@ -13,14 +13,24 @@ verify()
 
 }
 
-},200)
+},150)
+
+function fingerprint(){
+
+return navigator.userAgent +
+screen.width +
+screen.height +
+navigator.language +
+navigator.platform
+
+}
 
 function verify(){
 
 let params=new URLSearchParams(window.location.search)
 let uid=params.get("uid")
 
-fetch("http://YOUR_SERVER_IP:8000/api_verify",{
+fetch("http://127.0.0.1:8000/verify",{
 
 method:"POST",
 
@@ -29,19 +39,21 @@ headers:{
 },
 
 body:JSON.stringify({
-uid:uid
+uid:uid,
+fingerprint:fingerprint()
 })
 
 })
-.then(r=>r.text())
-.then(result=>{
 
-if(result=="success"){
+.then(r=>r.json())
+.then(data=>{
+
+if(data.status=="success"){
 
 document.body.innerHTML=`
 <h2>Verification Successful</h2>
-<a href="https://t.me/YOUR_BOT_USERNAME">
-<button>Back To Bot</button>
+<a href="https://t.me/Testing0011_ibot">
+<button>Back to Bot</button>
 </a>
 `
 
@@ -49,8 +61,8 @@ document.body.innerHTML=`
 
 document.body.innerHTML=`
 <h2>Verification Failed</h2>
-<a href="https://t.me/YOUR_BOT_USERNAME">
-<button>Back To Bot</button>
+<a href="https://t.me/Testing0011_ibot">
+<button>Back to Bot</button>
 </a>
 `
 
