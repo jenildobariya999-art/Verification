@@ -1,29 +1,41 @@
-let devices = {}
-
-export default function handler(req, res){
-
-const uid = req.query.uid
-const fp = req.query.fp
-
-if(!uid || !fp){
-res.json({status:"error"})
-return
+function canvasFingerprint(){
+ let canvas=document.createElement("canvas")
+ let ctx=canvas.getContext("2d")
+ ctx.font="14px Arial"
+ ctx.fillText("verify",2,2)
+ return canvas.toDataURL()
 }
 
-for(let user in devices){
+function verify(){
 
-if(devices[user] === fp && user !== uid){
+ let params=new URLSearchParams(window.location.search)
 
-devices[uid] = "blocked"
-res.json({status:"blocked"})
-return
+ let uid=params.get("uid")
 
-}
+ let fingerprint=
+ navigator.userAgent+
+ screen.width+
+ screen.height+
+ navigator.language+
+ canvasFingerprint()
 
-}
+ fetch("http://YOUR_SERVER_IP:8000/api_verify",{
 
-devices[uid] = fp
+ method:"POST",
 
-res.json({status:"verified"})
+ headers:{
+ "Content-Type":"application/json"
+ },
+
+ body:JSON.stringify({
+ uid:uid,
+ fingerprint:fingerprint
+ })
+
+ })
+ .then(r=>r.text())
+ .then(data=>{
+ document.body.innerHTML=data
+ })
 
 }
