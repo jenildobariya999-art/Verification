@@ -1,36 +1,75 @@
-let bar=document.getElementById("bar")
-let percent=0
+let bar = document.getElementById("bar")
+let percent = 0
 
-let interval=setInterval(()=>{
+let interval = setInterval(()=>{
 
-percent+=5
-bar.style.width=percent+"%"
+percent += 4
+bar.style.width = percent + "%"
 
-if(percent>=100){
-
+if(percent >= 100){
 clearInterval(interval)
 verify()
+}
+
+},120)
+
+function getFingerprint(){
+
+let canvas = document.createElement("canvas")
+let ctx = canvas.getContext("2d")
+
+ctx.textBaseline = "top"
+ctx.font = "14px Arial"
+ctx.fillText("device-check", 2, 2)
+
+let canvasFingerprint = canvas.toDataURL()
+
+return navigator.userAgent +
+navigator.language +
+navigator.platform +
+screen.width +
+screen.height +
+screen.colorDepth +
+canvasFingerprint
 
 }
 
-},150)
+function detectEmulator(){
 
-function fingerprint(){
+let ua = navigator.userAgent.toLowerCase()
 
-return navigator.userAgent +
-screen.width +
-screen.height +
-navigator.language +
-navigator.platform
+if(
+ua.includes("android sdk") ||
+ua.includes("emulator") ||
+ua.includes("genymotion")
+){
+return true
+}
+
+return false
 
 }
 
 function verify(){
 
-let params=new URLSearchParams(window.location.search)
-let uid=params.get("uid")
+let params = new URLSearchParams(window.location.search)
+let uid = params.get("uid")
 
-fetch("http://127.0.0.1:8000/verify",{
+if(detectEmulator()){
+
+document.body.innerHTML = `
+<h2>Verification Failed</h2>
+<p>Emulator detected</p>
+<a href="https://t.me/Testing0011_ibot">
+<button>Back to Bot</button>
+</a>
+`
+
+return
+
+}
+
+fetch("http://192.0.0.2:8000/verify",{
 
 method:"POST",
 
@@ -40,28 +79,30 @@ headers:{
 
 body:JSON.stringify({
 uid:uid,
-fingerprint:fingerprint()
+fingerprint:getFingerprint()
 })
 
 })
 
-.then(r=>r.json())
+.then(res=>res.json())
 .then(data=>{
 
 if(data.status=="success"){
 
-document.body.innerHTML=`
+document.body.innerHTML = `
 <h2>Verification Successful</h2>
-<a href="https://t.me/Testing0011_ibot?start=">
+<p>Your device verified successfully</p>
+<a href="https://t.me/Testing0011_ibot">
 <button>Back to Bot</button>
 </a>
 `
 
 }else{
 
-document.body.innerHTML=`
+document.body.innerHTML = `
 <h2>Verification Failed</h2>
-<a href="https://t.me/Testing0011_ibot?start=">
+<p>Duplicate device detected</p>
+<a href="https://t.me/Testing0011_ibot">
 <button>Back to Bot</button>
 </a>
 `
