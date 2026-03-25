@@ -8,24 +8,10 @@ let bar = document.getElementById("bar");
 let percent = document.getElementById("percent");
 let status = document.getElementById("status");
 
-let steps = [
-  "Initializing...",
-  "Checking hardware...",
-  "Analyzing device...",
-  "Validating security..."
-];
-
-let i = 0;
-
 let interval = setInterval(() => {
   progress += 5;
   bar.style.width = progress + "%";
   percent.innerText = progress + "%";
-
-  if (i < steps.length) {
-    document.getElementById("step").innerText = steps[i];
-    i++;
-  }
 
   if (progress >= 100) {
     clearInterval(interval);
@@ -33,21 +19,16 @@ let interval = setInterval(() => {
   }
 }, 150);
 
-// strong fingerprint
 function getDevice() {
   return JSON.stringify({
     ua: navigator.userAgent,
     screen: screen.width + "x" + screen.height,
     platform: navigator.platform,
     lang: navigator.language,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    cpu: navigator.hardwareConcurrency,
-    memory: navigator.deviceMemory,
-    touch: navigator.maxTouchPoints
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
   });
 }
 
-// verify
 function verify() {
   percent.innerText = "Checking...";
 
@@ -71,16 +52,14 @@ function verify() {
       status.className = "badge success";
       status.innerText = "VERIFIED";
 
-      document.getElementById("icon").innerText = "✅";
-      document.getElementById("title").innerText = "Verification Successful";
-      document.getElementById("desc").innerText = "Your device is secure.";
+      document.getElementById("title").innerText = "✅ Verified";
+      document.getElementById("desc").innerText = "Device approved";
     } else {
       status.className = "badge failed";
       status.innerText = "FAILED";
 
-      document.getElementById("icon").innerText = "❌";
-      document.getElementById("title").innerText = "Verification Failed";
-      document.getElementById("desc").innerText = "Device already used.";
+      document.getElementById("title").innerText = "❌ Failed";
+      document.getElementById("desc").innerText = "Device already used";
     }
   });
 }
