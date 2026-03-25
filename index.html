@@ -1,23 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Device Verification</title>
+  <title>Verification</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
 <body>
 
-<div class="container">
+<div class="card">
 
-  <h2>🔐 Verifying Device</h2>
-  <p>Establishing secure handshake...</p>
-
-  <div class="progress">
-    <div id="bar"></div>
+  <!-- USER INFO -->
+  <div class="top">
+    <img src="https://i.imgur.com/4Z7CV1F.png" class="avatar">
+    <div>
+      <h3 id="name">User</h3>
+      <p id="uid">ID: ---</p>
+    </div>
+    <span class="status scanning" id="status">SCANNING</span>
   </div>
 
-  <p id="percent">0%</p>
+  <!-- SCAN BOX -->
+  <div id="scanBox">
+    <div class="circle">
+      <div class="fingerprint"></div>
+    </div>
+
+    <h2>Verifying Device</h2>
+    <p>Establishing secure handshake...</p>
+
+    <div class="progress">
+      <div id="bar"></div>
+    </div>
+
+    <span id="percent">0%</span>
+  </div>
+
+  <!-- SUCCESS -->
+  <div id="success" class="hidden">
+    <div class="circle success"></div>
+    <h2 class="green">Verified Successfully</h2>
+    <p>You can now use the bot</p>
+    <button onclick="closeApp()">CONTINUE TO BOT</button>
+  </div>
+
+  <!-- FAIL -->
+  <div id="fail" class="hidden">
+    <div class="circle fail"></div>
+    <h2 class="red">Verification Failed</h2>
+    <p>Multiple devices detected</p>
+    <button onclick="closeApp()">CONTINUE</button>
+  </div>
 
 </div>
 
