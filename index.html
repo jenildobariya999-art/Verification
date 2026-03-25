@@ -1,36 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Verify Device</title>
+  <title>Verification</title>
+  <link rel="stylesheet" href="style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
+
 <body>
 
-<h2>Verifying Device...</h2>
+<div class="container">
 
-<script>
-  function getDeviceFingerprint() {
-    let data = {
-      userAgent: navigator.userAgent,
-      screen: screen.width + "x" + screen.height,
-      platform: navigator.platform,
-      language: navigator.language
-    };
-    return JSON.stringify(data);
-  }
+  <div id="scan">
+    <h2>Verifying Device</h2>
+    <p>Establishing secure handshake...</p>
 
-  let tg = window.Telegram.WebApp;
+    <div class="progress">
+      <div id="bar"></div>
+    </div>
 
-  let fingerprint = getDeviceFingerprint();
+    <p id="percent">0%</p>
+  </div>
 
-  // Send data to bot
-  tg.sendData(fingerprint);
+  <div id="success" class="hidden">
+    <h1 class="green">✔ Verified Successfully</h1>
+    <button onclick="closeApp()">CONTINUE TO BOT</button>
+  </div>
 
-  // Close after sending
-  setTimeout(() => {
-    tg.close();
-  }, 1000);
-</script>
+  <div id="fail" class="hidden">
+    <h1 class="red">❌ Verification Failed</h1>
+    <p>Multiple devices detected</p>
+    <button onclick="closeApp()">CONTINUE</button>
+  </div>
 
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
