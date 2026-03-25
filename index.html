@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Device Verification</title>
+  <title>Verification</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
@@ -10,38 +10,33 @@
 
 <div class="container">
 
-  <!-- TOP USER -->
-  <div class="header">
-    <div>
-      <h3 id="name">User</h3>
-      <p id="uid">ID: ---</p>
-    </div>
+  <!-- STATUS -->
+  <div class="top">
+    <h3 id="name">User</h3>
     <span id="status" class="badge scanning">SCANNING</span>
   </div>
 
   <!-- SCAN -->
   <div id="scanBox">
-    <div class="scan-circle">
-      <div class="pulse"></div>
-    </div>
+    <div class="circle"></div>
 
     <h2>Verifying Device</h2>
-    <p>Scanning security parameters...</p>
+    <p id="step">Initializing...</p>
 
     <div class="progress">
       <div id="bar"></div>
     </div>
 
-    <span id="percent">0%</span>
+    <p id="percent">0%</p>
   </div>
 
   <!-- RESULT -->
   <div id="resultBox" class="hidden">
-    <div id="icon"></div>
+    <h1 id="icon"></h1>
     <h2 id="title"></h2>
     <p id="desc"></p>
 
-    <button onclick="closeApp()">CONTINUE</button>
+    <button onclick="closeApp()">Continue</button>
   </div>
 
 </div>
