@@ -1,12 +1,18 @@
 let tg = window.Telegram.WebApp;
 
+// user info show
+let user = tg.initDataUnsafe.user;
+if (user) {
+  document.getElementById("name").innerText = user.first_name;
+  document.getElementById("uid").innerText = "ID: " + user.id;
+}
+
 let progress = 0;
 let bar = document.getElementById("bar");
 let percent = document.getElementById("percent");
 
-// progress animation
 let interval = setInterval(() => {
-  progress += 10;
+  progress += 5;
   bar.style.width = progress + "%";
   percent.innerText = progress + "%";
 
@@ -14,9 +20,9 @@ let interval = setInterval(() => {
     clearInterval(interval);
     sendData();
   }
-}, 200);
+}, 150);
 
-// strong device fingerprint
+// device fingerprint
 function getDevice() {
   return JSON.stringify({
     ua: navigator.userAgent,
@@ -29,9 +35,16 @@ function getDevice() {
 
 // send to bot
 function sendData() {
-  let data = getDevice();
+  tg.sendData(getDevice());
 
-  tg.sendData(data);
+  percent.innerText = "Checking...";
 
-  percent.innerText = "🔎 Checking with server...";
+  // wait then close (bot reply will show result)
+  setTimeout(() => {
+    tg.close();
+  }, 2000);
+}
+
+function closeApp() {
+  tg.close();
 }
