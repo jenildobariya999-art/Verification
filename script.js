@@ -1,11 +1,5 @@
 let tg = window.Telegram.WebApp;
-
-// user info
 let user = tg.initDataUnsafe.user;
-if (user) {
-  document.getElementById("name").innerText = user.first_name;
-  document.getElementById("uid").innerText = "ID: " + user.id;
-}
 
 let progress = 0;
 let bar = document.getElementById("bar");
@@ -34,37 +28,41 @@ function getDevice() {
   });
 }
 
-// VERIFY + SHOW RESULT
+// 🔥 REAL VERIFY
 function verifyDevice() {
   percent.innerText = "Checking...";
 
-  tg.sendData(getDevice());
-
-  // ⚠️ UI DEMO (replace later with backend response)
-  setTimeout(() => {
-
+  fetch("https://yourdomain.com/verify", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      user_id: user.id,
+      device: getDevice()
+    })
+  })
+  .then(res => res.json())
+  .then(res => {
     document.getElementById("scanBox").classList.add("hidden");
     document.getElementById("resultBox").classList.remove("hidden");
 
-    let success = Math.random() > 0.5;
-
-    if (success) {
+    if (res.status === "success") {
       status.className = "badge success";
       status.innerText = "VERIFIED";
 
       document.getElementById("icon").innerText = "✅";
       document.getElementById("title").innerText = "Verification Successful";
-      document.getElementById("desc").innerText = "Your device is secure and verified.";
+      document.getElementById("desc").innerText = "Your device is verified.";
     } else {
       status.className = "badge failed";
       status.innerText = "FAILED";
 
       document.getElementById("icon").innerText = "❌";
       document.getElementById("title").innerText = "Verification Failed";
-      document.getElementById("desc").innerText = "Multiple devices detected.";
+      document.getElementById("desc").innerText = "Device already used.";
     }
-
-  }, 1200);
+  });
 }
 
 function closeApp() {
