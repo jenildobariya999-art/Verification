@@ -1,18 +1,62 @@
 body {
-  background: #0b0f1a;
-  color: white;
+  margin: 0;
+  background: radial-gradient(circle at top, #0b1220, #05080f);
   font-family: Arial;
+  color: white;
   text-align: center;
 }
 
-.container {
-  margin-top: 120px;
+.card {
+  padding: 20px;
 }
 
+/* TOP BAR */
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.avatar {
+  width: 50px;
+  border-radius: 50%;
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.scanning { background: #1e3a8a; }
+.active { background: #065f46; }
+.failed { background: #7f1d1d; }
+
+/* CIRCLE */
+.circle {
+  width: 120px;
+  height: 120px;
+  margin: 40px auto;
+  border-radius: 50%;
+  border: 3px solid #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success {
+  border-color: #00ff99;
+}
+
+.fail {
+  border-color: red;
+}
+
+/* PROGRESS */
 .progress {
   width: 80%;
-  height: 10px;
-  background: #222;
+  height: 8px;
+  background: #1f2937;
   margin: 20px auto;
   border-radius: 10px;
 }
@@ -20,7 +64,23 @@ body {
 #bar {
   height: 100%;
   width: 0%;
-  background: #3b82f6;
+  background: linear-gradient(to right, #3b82f6, #06b6d4);
   border-radius: 10px;
-  transition: 0.2s;
+}
+
+/* TEXT */
+.green { color: #00ff99; }
+.red { color: #ff4d4d; }
+
+button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #00ff99;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.hidden {
+  display: none;
 }
