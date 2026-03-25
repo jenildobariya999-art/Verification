@@ -1,71 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Verification</title>
-
-<style>
-
-body{
-background:#0b1623;
-color:white;
-font-family:sans-serif;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
-
-.card{
-background:#10223b;
-padding:40px;
-border-radius:15px;
-width:300px;
-text-align:center;
-}
-
-.bar{
-height:10px;
-background:#1e3354;
-border-radius:10px;
-overflow:hidden;
-margin-top:20px;
-}
-
-.progress{
-height:10px;
-width:0%;
-background:#3fa9ff;
-}
-
-button{
-padding:10px 20px;
-border:none;
-border-radius:8px;
-background:#3fa9ff;
-color:white;
-}
-
-</style>
-
+  <title>Verify Device</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
-
 <body>
 
-<div class="card">
+<h2>Verifying Device...</h2>
 
-<h2>Device Verification</h2>
+<script>
+  function getDeviceFingerprint() {
+    let data = {
+      userAgent: navigator.userAgent,
+      screen: screen.width + "x" + screen.height,
+      platform: navigator.platform,
+      language: navigator.language
+    };
+    return JSON.stringify(data);
+  }
 
-<div class="bar">
-<div class="progress" id="bar"></div>
-</div>
+  let tg = window.Telegram.WebApp;
 
-<p>Analyzing device...</p>
+  let fingerprint = getDeviceFingerprint();
 
-</div>
+  // Send data to bot
+  tg.sendData(fingerprint);
 
-<script src="verify.js"></script>
+  // Close after sending
+  setTimeout(() => {
+    tg.close();
+  }, 1000);
+</script>
 
 </body>
 </html>
