@@ -1,0 +1,45 @@
+body {
+  background: #0b0f1a;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+
+.container {
+  margin-top: 100px;
+}
+
+.progress {
+  width: 80%;
+  height: 10px;
+  background: #222;
+  margin: 20px auto;
+  border-radius: 10px;
+}
+
+#bar {
+  height: 100%;
+  width: 0%;
+  background: #3b82f6;
+  border-radius: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+.green {
+  color: #00ff99;
+}
+
+.red {
+  color: #ff4d4d;
+}
+
+button {
+  padding: 12px 25px;
+  background: #00ff99;
+  border: none;
+  border-radius: 8px;
+  margin-top: 20px;
+}
