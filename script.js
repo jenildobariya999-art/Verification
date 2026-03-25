@@ -52,13 +52,15 @@ function verify() {
       status.className = "badge success";
       status.innerText = "VERIFIED";
 
-      document.getElementById("title").innerText = "✅ Verified";
+      document.getElementById("icon").innerText = "✅";
+      document.getElementById("title").innerText = "Verification Successful";
       document.getElementById("desc").innerText = "Device approved";
     } else {
       status.className = "badge failed";
       status.innerText = "FAILED";
 
-      document.getElementById("title").innerText = "❌ Failed";
+      document.getElementById("icon").innerText = "❌";
+      document.getElementById("title").innerText = "Verification Failed";
       document.getElementById("desc").innerText = "Device already used";
     }
   });
