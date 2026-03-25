@@ -1,11 +1,10 @@
 let tg = window.Telegram.WebApp;
 let user = tg.initDataUnsafe.user;
 
+let progress = 0;
 let bar = document.getElementById("bar");
 let percent = document.getElementById("percent");
 let status = document.getElementById("status");
-
-let progress = 0;
 
 let interval = setInterval(() => {
   progress += 10;
@@ -18,7 +17,6 @@ let interval = setInterval(() => {
   }
 }, 150);
 
-// device data
 function getDevice() {
   return JSON.stringify({
     ua: navigator.userAgent,
@@ -28,11 +26,10 @@ function getDevice() {
   });
 }
 
-// 🔥 REAL VERIFY FUNCTION
 function verify() {
   percent.innerText = "Checking...";
 
-  fetch("https://yourdomain.com/verify", {
+  fetch("https://verification-bot-apjv.onrender.com/verify", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -45,7 +42,6 @@ function verify() {
   .then(res => res.json())
   .then(res => {
 
-    // hide scan
     document.getElementById("scanBox").style.display = "none";
     document.getElementById("resultBox").style.display = "block";
 
@@ -53,31 +49,18 @@ function verify() {
       status.className = "badge success";
       status.innerText = "VERIFIED";
 
-      document.getElementById("title").innerText = "✅ Verified Successfully";
-      document.getElementById("desc").innerText = "Your device is approved.";
-    }
-
-    else if (res.status === "failed") {
+      document.getElementById("title").innerText = "✅ Verified";
+      document.getElementById("desc").innerText = "Device approved";
+    } else {
       status.className = "badge failed";
       status.innerText = "FAILED";
 
-      document.getElementById("title").innerText = "❌ Verification Failed";
-      document.getElementById("desc").innerText = "Device already used.";
+      document.getElementById("title").innerText = "❌ Failed";
+      document.getElementById("desc").innerText = "Device already used";
     }
-
-    else {
-      status.className = "badge failed";
-      status.innerText = "ERROR";
-
-      document.getElementById("title").innerText = "⚠️ Error";
-      document.getElementById("desc").innerText = "Try again later.";
-    }
-
   })
   .catch(err => {
+    document.getElementById("title").innerText = "❌ Server Error";
     console.log(err);
-
-    document.getElementById("title").innerText = "⚠️ Server Error";
-    document.getElementById("desc").innerText = "Backend not connected.";
   });
 }
