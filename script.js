@@ -1,6 +1,7 @@
 let tg = window.Telegram.WebApp;
-let user = tg.initDataUnsafe.user;
+tg.expand();
 
+let user = tg.initDataUnsafe.user;
 document.getElementById("name").innerText = user.first_name;
 
 let progress = 0;
@@ -32,11 +33,9 @@ function getDevice() {
 function verify() {
   percent.innerText = "Checking...";
 
-  fetch("https://verification-bot-apjv.onrender.com/verify", {
+  fetch("/api/verify", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       user_id: user.id,
       device: getDevice()
