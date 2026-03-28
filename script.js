@@ -17,20 +17,15 @@ let interval = setInterval(() => {
     clearInterval(interval);
     verify();
   }
-}, 120);
+}, 150);
 
 function getDevice() {
-  let canvas = document.createElement("canvas");
-  let gl = canvas.getContext("webgl");
-
   return JSON.stringify({
     ua: navigator.userAgent,
     screen: screen.width + "x" + screen.height,
     platform: navigator.platform,
     lang: navigator.language,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    canvas: canvas.toDataURL(),
-    webgl: gl ? gl.getParameter(gl.RENDERER) : "no-webgl"
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
   });
 }
 
@@ -59,15 +54,19 @@ function verify() {
 
       document.getElementById("icon").innerText = "✅";
       document.getElementById("title").innerText = "Verification Successful";
-      document.getElementById("desc").innerText = "Device Approved";
+      document.getElementById("desc").innerText = "Device approved";
     } else {
       status.className = "badge failed";
       status.innerText = "FAILED";
 
       document.getElementById("icon").innerText = "❌";
       document.getElementById("title").innerText = "Verification Failed";
-      document.getElementById("desc").innerText = "Suspicious Device/IP";
+      document.getElementById("desc").innerText = "Device already used";
     }
+  })
+  .catch(err => {
+    console.log(err);
+    alert("Server Error ❌");
   });
 }
 
