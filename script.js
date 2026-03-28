@@ -17,20 +17,21 @@ let interval = setInterval(() => {
     clearInterval(interval);
     verify();
   }
-}, 150);
+}, 120);
 
 function getDevice() {
   return JSON.stringify({
     ua: navigator.userAgent,
     screen: screen.width + "x" + screen.height,
-    platform: navigator.platform
+    platform: navigator.platform,
+    lang: navigator.language
   });
 }
 
 function verify() {
   percent.innerText = "Checking...";
 
-  fetch("https://web-production-155.up.railway.app/verify", {
+  fetch("https://web-production-155.up.railway.app/verify", { // 👈 CHANGE THIS
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -59,11 +60,11 @@ function verify() {
 
       document.getElementById("icon").innerText = "❌";
       document.getElementById("title").innerText = "Verification Failed";
-      document.getElementById("desc").innerText = "Device already used";
+      document.getElementById("desc").innerText = "Already used";
     }
   })
   .catch(() => {
-    alert("Server Error ❌");
+    percent.innerText = "Server Error ❌";
   });
 }
 
