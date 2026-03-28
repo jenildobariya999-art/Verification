@@ -55,4 +55,5 @@ button {
   border-radius: 10px;
   background: #16a34a;
   color: white;
+  cursor: pointer;
 }
