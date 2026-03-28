@@ -17,15 +17,14 @@ let interval = setInterval(() => {
     clearInterval(interval);
     verify();
   }
-}, 150);
+}, 120);
 
 function getDevice() {
   return JSON.stringify({
     ua: navigator.userAgent,
     screen: screen.width + "x" + screen.height,
     platform: navigator.platform,
-    lang: navigator.language,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    lang: navigator.language
   });
 }
 
@@ -46,7 +45,7 @@ function verify() {
   .then(res => {
 
     document.getElementById("scanBox").style.display = "none";
-    document.getElementById("resultBox").classList.remove("hidden");
+    document.getElementById("resultBox").style.display = "block";
 
     if (res.status === "success") {
       status.className = "badge success";
@@ -55,29 +54,35 @@ function verify() {
       document.getElementById("icon").innerText = "✅";
       document.getElementById("title").innerText = "Verification Successful";
       document.getElementById("desc").innerText = "Device approved";
-    } else {
+
+    } else if (res.status === "failed") {
       status.className = "badge failed";
       status.innerText = "FAILED";
 
       document.getElementById("icon").innerText = "❌";
       document.getElementById("title").innerText = "Verification Failed";
-      document.getElementById("desc").innerText = "Already used device/IP";
-    }
+      document.getElementById("desc").innerText = "Device already used";
 
+    } else {
+      showError();
+    }
   })
   .catch(err => {
     console.log(err);
-
-    document.getElementById("scanBox").style.display = "none";
-    document.getElementById("resultBox").classList.remove("hidden");
-
-    status.className = "badge failed";
-    status.innerText = "ERROR";
-
-    document.getElementById("icon").innerText = "⚠️";
-    document.getElementById("title").innerText = "Server Error";
-    document.getElementById("desc").innerText = "Try again later";
+    showError();
   });
+}
+
+function showError() {
+  document.getElementById("scanBox").style.display = "none";
+  document.getElementById("resultBox").style.display = "block";
+
+  status.className = "badge failed";
+  status.innerText = "ERROR";
+
+  document.getElementById("icon").innerText = "⚠️";
+  document.getElementById("title").innerText = "Server Error";
+  document.getElementById("desc").innerText = "Backend not reachable";
 }
 
 function closeApp() {
