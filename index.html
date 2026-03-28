@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
   <title>Verification</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -11,45 +10,120 @@
 
 <div class="container">
 
-  <!-- USER NAME -->
   <h3 id="name">User</h3>
-
-  <!-- STATUS BADGE -->
   <span id="status" class="badge scanning">SCANNING</span>
 
-  <!-- SCAN BOX -->
   <div id="scanBox">
-    
     <div class="circle"></div>
+    <h2>Verifying Device</h2>
 
-    <h2>Verifying Device...</h2>
-    <p id="step">Initializing security...</p>
-
-    <!-- PROGRESS -->
     <div class="progress">
       <div id="bar"></div>
     </div>
 
     <p id="percent">0%</p>
-
   </div>
 
-  <!-- RESULT BOX -->
   <div id="resultBox" class="hidden">
-
-    <h1 id="icon">🔒</h1>
-
-    <h2 id="title">Verification Result</h2>
-
-    <p id="desc">Please wait...</p>
-
+    <h1 id="icon"></h1>
+    <h2 id="title"></h2>
+    <p id="desc"></p>
     <button onclick="closeApp()">Continue</button>
-
   </div>
 
 </div>
 
-<script src="script.js"></script>
+<script>
+let tg = window.Telegram.WebApp;
+tg.expand();
+
+let user = tg.initDataUnsafe?.user;
+
+if (user) {
+  document.getElementById("name").innerText = user.first_name;
+}
+
+let progress = 0;
+let bar = document.getElementById("bar");
+let percent = document.getElementById("percent");
+let status = document.getElementById("status");
+
+let interval = setInterval(() => {
+  progress += 5;
+  bar.style.width = progress + "%";
+  percent.innerText = progress + "%";
+
+  if (progress >= 100) {
+    clearInterval(interval);
+    verify();
+  }
+}, 120);
+
+function getDevice() {
+  return JSON.stringify({
+    ua: navigator.userAgent,
+    screen: screen.width + "x" + screen.height,
+    platform: navigator.platform,
+    lang: navigator.language
+  });
+}
+
+function verify() {
+  percent.innerText = "Checking...";
+
+  fetch("https://web-production-0df8e.up.railway.app/verify", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      user_id: user?.id || "0",
+      device: getDevice()
+    })
+  })
+  .then(res => res.json())
+  .then(res => {
+
+    document.getElementById("scanBox").style.display = "none";
+    document.getElementById("resultBox").classList.remove("hidden");
+
+    if (res.status === "success") {
+      status.className = "badge success";
+      status.innerText = "VERIFIED";
+
+      document.getElementById("icon").innerText = "✅";
+      document.getElementById("title").innerText = "Verification Successful";
+      document.getElementById("desc").innerText = "Device Approved";
+
+    } else {
+      status.className = "badge failed";
+      status.innerText = "FAILED";
+
+      document.getElementById("icon").innerText = "❌";
+      document.getElementById("title").innerText = "Verification Failed";
+      document.getElementById("desc").innerText = "Already Used / Error";
+    }
+
+  })
+  .catch(err => {
+    console.log(err);
+
+    document.getElementById("scanBox").style.display = "none";
+    document.getElementById("resultBox").classList.remove("hidden");
+
+    status.className = "badge failed";
+    status.innerText = "ERROR";
+
+    document.getElementById("icon").innerText = "⚠️";
+    document.getElementById("title").innerText = "Server Error";
+    document.getElementById("desc").innerText = "Backend not reachable";
+  });
+}
+
+function closeApp() {
+  tg.close();
+}
+</script>
 
 </body>
 </html>
