@@ -21,7 +21,7 @@ async function verify() {
 
   let fingerprint = getFingerprint();
 
-  let res = await fetch("https://YOUR-RAILWAY-URL/verify", {
+  let res = await fetch("https://web-production-0df8e.up.railway.app/verify", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
