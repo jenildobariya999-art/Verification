@@ -17,21 +17,20 @@ let interval = setInterval(() => {
     clearInterval(interval);
     verify();
   }
-}, 120);
+}, 150);
 
 function getDevice() {
   return JSON.stringify({
     ua: navigator.userAgent,
     screen: screen.width + "x" + screen.height,
-    platform: navigator.platform,
-    lang: navigator.language
+    platform: navigator.platform
   });
 }
 
 function verify() {
   percent.innerText = "Checking...";
 
-  fetch("https://web-production-0df8e.up.railway.app/verify", {
+  fetch("https://web-production-155.up.railway.app/verify", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -54,35 +53,18 @@ function verify() {
       document.getElementById("icon").innerText = "✅";
       document.getElementById("title").innerText = "Verification Successful";
       document.getElementById("desc").innerText = "Device approved";
-
-    } else if (res.status === "failed") {
+    } else {
       status.className = "badge failed";
       status.innerText = "FAILED";
 
       document.getElementById("icon").innerText = "❌";
       document.getElementById("title").innerText = "Verification Failed";
       document.getElementById("desc").innerText = "Device already used";
-
-    } else {
-      showError();
     }
   })
-  .catch(err => {
-    console.log(err);
-    showError();
+  .catch(() => {
+    alert("Server Error ❌");
   });
-}
-
-function showError() {
-  document.getElementById("scanBox").style.display = "none";
-  document.getElementById("resultBox").style.display = "block";
-
-  status.className = "badge failed";
-  status.innerText = "ERROR";
-
-  document.getElementById("icon").innerText = "⚠️";
-  document.getElementById("title").innerText = "Server Error";
-  document.getElementById("desc").innerText = "Backend not reachable";
 }
 
 function closeApp() {
