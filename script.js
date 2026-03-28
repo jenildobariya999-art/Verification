@@ -1,7 +1,6 @@
 let tg = window.Telegram.WebApp;
-tg.expand();
-
 let user = tg.initDataUnsafe.user;
+
 document.getElementById("name").innerText = user.first_name;
 
 let progress = 0;
@@ -33,7 +32,7 @@ function getDevice() {
 function verify() {
   percent.innerText = "Checking...";
 
-  fetch("/api/verify", {
+  fetch("https://web-production-0df8e.up.railway.app/verify", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -43,25 +42,43 @@ function verify() {
   })
   .then(res => res.json())
   .then(res => {
-
     document.getElementById("scanBox").style.display = "none";
     document.getElementById("resultBox").style.display = "block";
 
+    // Update status badge and result
     if (res.status === "success") {
       status.className = "badge success";
       status.innerText = "VERIFIED";
-
       document.getElementById("icon").innerText = "✅";
       document.getElementById("title").innerText = "Verification Successful";
       document.getElementById("desc").innerText = "Device approved";
+
+      // Notify bot
+      sendToBot("success");
     } else {
       status.className = "badge failed";
       status.innerText = "FAILED";
-
       document.getElementById("icon").innerText = "❌";
       document.getElementById("title").innerText = "Verification Failed";
       document.getElementById("desc").innerText = "Device already used";
+
+      sendToBot("failed");
     }
+  })
+  .catch(err => {
+    console.error(err);
+  });
+}
+
+function sendToBot(result) {
+  fetch("https://web-production-0df8e.up.railway.app/webhook", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: user.id,
+      result: result,
+      device_info: getDevice()
+    })
   });
 }
 
