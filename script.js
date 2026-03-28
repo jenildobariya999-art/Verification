@@ -60,13 +60,15 @@ function verify() {
     }
 
   })
-  .catch(err => {
+  .catch(() => {
     document.getElementById("scanBox").style.display = "none";
     document.getElementById("resultBox").style.display = "block";
 
     status.className = "badge failed";
     status.innerText = "SERVER ERROR ❌";
-
-    console.log("FETCH ERROR:", err);
   });
+}
+
+function closeApp() {
+  tg.close();
 }
