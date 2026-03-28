@@ -2,48 +2,14 @@
 <html>
 <head>
   <title>Verification</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script>
-    async function verifyUser() {
-      let urlParams = new URLSearchParams(window.location.search);
-      let user_id = urlParams.get("id");
-
-      if (!user_id) {
-        document.getElementById("status").innerText = "❌ Invalid Link";
-        return;
-      }
-
-      document.getElementById("status").innerText = "⏳ Verifying...";
-
-      try {
-        let res = await fetch("https://web-production-0df8e.up.railway.app/verify", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            user_id: user_id,
-            ip: "auto"
-          })
-        });
-
-        let data = await res.json();
-
-        if (data.status === "ok") {
-          document.getElementById("status").innerText = "✅ Verified Successfully!";
-        } else {
-          document.getElementById("status").innerText = "❌ Verification Failed!";
-        }
-
-      } catch {
-        document.getElementById("status").innerText = "⚠️ Server Error";
-      }
-    }
-
-    window.onload = verifyUser;
-  </script>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body style="text-align:center; margin-top:100px; font-family:sans-serif;">
-  <h2 id="status">Loading...</h2>
+<body>
+
+<div class="box">
+  <h2 id="status">Checking...</h2>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
