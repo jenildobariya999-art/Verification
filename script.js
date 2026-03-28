@@ -17,21 +17,22 @@ let interval = setInterval(() => {
     clearInterval(interval);
     verify();
   }
-}, 120);
+}, 150);
 
 function getDevice() {
   return JSON.stringify({
     ua: navigator.userAgent,
     screen: screen.width + "x" + screen.height,
     platform: navigator.platform,
-    lang: navigator.language
+    lang: navigator.language,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
   });
 }
 
 function verify() {
   percent.innerText = "Checking...";
 
-  fetch("https://web-production-155.up.railway.app/verify", { // 👈 CHANGE THIS
+  fetch("https://web-production-155.up.railway.app/verify", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -50,24 +51,22 @@ function verify() {
     if (res.status === "success") {
       status.className = "badge success";
       status.innerText = "VERIFIED";
-
-      document.getElementById("icon").innerText = "✅";
-      document.getElementById("title").innerText = "Verification Successful";
-      document.getElementById("desc").innerText = "Device approved";
-    } else {
+    } else if (res.status === "failed") {
       status.className = "badge failed";
       status.innerText = "FAILED";
-
-      document.getElementById("icon").innerText = "❌";
-      document.getElementById("title").innerText = "Verification Failed";
-      document.getElementById("desc").innerText = "Already used";
+    } else {
+      status.className = "badge failed";
+      status.innerText = "SERVER ERROR ❌";
     }
-  })
-  .catch(() => {
-    percent.innerText = "Server Error ❌";
-  });
-}
 
-function closeApp() {
-  tg.close();
+  })
+  .catch(err => {
+    document.getElementById("scanBox").style.display = "none";
+    document.getElementById("resultBox").style.display = "block";
+
+    status.className = "badge failed";
+    status.innerText = "SERVER ERROR ❌";
+
+    console.log("FETCH ERROR:", err);
+  });
 }
