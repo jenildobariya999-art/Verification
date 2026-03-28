@@ -46,7 +46,7 @@ function verify() {
   .then(res => {
 
     document.getElementById("scanBox").style.display = "none";
-    document.getElementById("resultBox").style.display = "block";
+    document.getElementById("resultBox").classList.remove("hidden");
 
     if (res.status === "success") {
       status.className = "badge success";
@@ -61,12 +61,22 @@ function verify() {
 
       document.getElementById("icon").innerText = "❌";
       document.getElementById("title").innerText = "Verification Failed";
-      document.getElementById("desc").innerText = "Device already used";
+      document.getElementById("desc").innerText = "Already used device/IP";
     }
+
   })
   .catch(err => {
     console.log(err);
-    alert("Server Error ❌");
+
+    document.getElementById("scanBox").style.display = "none";
+    document.getElementById("resultBox").classList.remove("hidden");
+
+    status.className = "badge failed";
+    status.innerText = "ERROR";
+
+    document.getElementById("icon").innerText = "⚠️";
+    document.getElementById("title").innerText = "Server Error";
+    document.getElementById("desc").innerText = "Try again later";
   });
 }
 
