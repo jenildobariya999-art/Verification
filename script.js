@@ -4,60 +4,28 @@ function getUserId() {
     return new URLSearchParams(window.location.search).get("id")
 }
 
-// 🔥 REAL FINGERPRINT
-async function getFingerprint() {
-    let canvas = document.createElement("canvas")
-    let ctx = canvas.getContext("2d")
-
-    ctx.textBaseline = "top"
-    ctx.font = "14px Arial"
-    ctx.fillText("GH_VERIFICATION", 2, 2)
-
-    let canvasData = canvas.toDataURL()
-
-    let gl = document.createElement("canvas").getContext("webgl")
-    let debugInfo = gl.getExtension("WEBGL_debug_renderer_info")
-
-    let renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
-    let vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)
-
-    return canvasData + renderer + vendor + navigator.userAgent
+// 🔥 SIMPLE BUT STABLE FINGERPRINT
+function getFingerprint() {
+    return navigator.userAgent + screen.width + screen.height
 }
 
-// 🌐 GET IP
+// 🌐 IP
 async function getIP() {
     let res = await fetch("https://api.ipify.org?format=json")
     let data = await res.json()
     return data.ip
 }
 
-// 🔥 VPN CHECK
-async function checkVPN(ip) {
-    try {
-        let res = await fetch(`https://ipapi.co/${ip}/json/`)
-        let data = await res.json()
-
-        if (data.security && data.security.vpn) {
-            return true
-        }
-        return false
-    } catch {
-        return false
-    }
-}
-
-// 🚀 VERIFY FUNCTION
 async function verify() {
     try {
         let user_id = getUserId()
-        let fingerprint = await getFingerprint()
-        let ip = await getIP()
-        let vpn = await checkVPN(ip)
-
-        if (vpn) {
-            status.innerHTML = "❌ VPN Detected"
+        if (!user_id) {
+            status.innerHTML = "❌ Invalid Access"
             return
         }
+
+        let fingerprint = getFingerprint()
+        let ip = await getIP()
 
         let res = await fetch("https://web-production-155.up.railway.app/verify", {
             method: "POST",
