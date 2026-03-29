@@ -1,57 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Verify</title>
+    <title>Verification</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2 id="status">🔍 Verifying...</h2>
+<div class="box">
+    <h2 id="status">🔍 Verifying Device...</h2>
+</div>
 
-<script>
-const params = new URLSearchParams(window.location.search);
-const user_id = params.get("id");
-const token = params.get("token");
-
-// 🔐 Advanced fingerprint
-function getFingerprint() {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    ctx.textBaseline = "top";
-    ctx.font = "16px Arial";
-    ctx.fillText("verify", 2, 2);
-
-    return navigator.userAgent +
-           navigator.platform +
-           screen.width +
-           screen.height +
-           canvas.toDataURL();
-}
-
-const fingerprint = getFingerprint();
-
-fetch("https://web-production-155.up.railway.app/verify", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        user_id: user_id,
-        token: token,
-        fingerprint: fingerprint
-    })
-})
-.then(res => res.json())
-.then(data => {
-    if(data.status === "success"){
-        document.getElementById("status").innerHTML = "✅ Verified Successfully!";
-    } else {
-        document.getElementById("status").innerHTML = "❌ " + data.reason;
-    }
-})
-.catch(() => {
-    document.getElementById("status").innerHTML = "❌ Verification Failed";
-});
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
