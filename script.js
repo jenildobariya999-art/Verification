@@ -1,39 +1,38 @@
-const params = new URLSearchParams(window.location.search);
+const status = document.getElementById("status")
 
-const user_id = params.get("id");
-const token = params.get("token");
-
-// ✅ Stable fingerprint
 function getFingerprint() {
-    return navigator.userAgent +
-           navigator.platform +
-           screen.width +
-           screen.height;
+    return navigator.userAgent + screen.width + screen.height
 }
 
-const fingerprint = getFingerprint();
+function getIP() {
+    return fetch("https://api.ipify.org?format=json")
+        .then(res => res.json())
+        .then(data => data.ip)
+}
 
-fetch("https://web-production-155.up.railway.app/verify", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        user_id: user_id,
-        token: token,
-        fingerprint: fingerprint
-    })
-})
-.then(res => res.json())
-.then(data => {
-    const status = document.getElementById("status");
+async function verify() {
+    try {
+        let fp = getFingerprint()
+        let ip = await getIP()
 
-    if(data.status === "success"){
-        status.innerHTML = "✅ Verification Successful!";
-    } else {
-        status.innerHTML = "❌ " + data.reason;
+        let stored = localStorage.getItem("verified_device")
+
+        let current = fp + "_" + ip
+
+        if (!stored) {
+            localStorage.setItem("verified_device", current)
+            status.innerHTML = "✅ Verification Successful"
+        } else {
+            if (stored === current) {
+                status.innerHTML = "✅ Already Verified"
+            } else {
+                status.innerHTML = "❌ Verification Failed"
+            }
+        }
+
+    } catch (e) {
+        status.innerHTML = "❌ Verification Failed"
     }
-})
-.catch(() => {
-    document.getElementById("status").innerHTML = "❌ Verification Failed";
-});
+}
+
+verify()
