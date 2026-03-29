@@ -1,74 +1,39 @@
-let tg = window.Telegram.WebApp;
-let user = tg.initDataUnsafe.user;
+const params = new URLSearchParams(window.location.search);
 
-document.getElementById("name").innerText = user.first_name;
+const user_id = params.get("id");
+const token = params.get("token");
 
-let progress = 0;
-let bar = document.getElementById("bar");
-let percent = document.getElementById("percent");
-let status = document.getElementById("status");
-
-let interval = setInterval(() => {
-  progress += 5;
-  bar.style.width = progress + "%";
-  percent.innerText = progress + "%";
-
-  if (progress >= 100) {
-    clearInterval(interval);
-    verify();
-  }
-}, 150);
-
-function getDevice() {
-  return JSON.stringify({
-    ua: navigator.userAgent,
-    screen: screen.width + "x" + screen.height,
-    platform: navigator.platform,
-    lang: navigator.language,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-  });
+// ✅ Stable fingerprint
+function getFingerprint() {
+    return navigator.userAgent +
+           navigator.platform +
+           screen.width +
+           screen.height;
 }
 
-function verify() {
-  percent.innerText = "Checking...";
+const fingerprint = getFingerprint();
 
-  fetch("https://web-production-155.up.railway.app/verify", {
+fetch("https://web-production-155.up.railway.app/verify", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+        "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      user_id: user.id,
-      device: getDevice()
+        user_id: user_id,
+        token: token,
+        fingerprint: fingerprint
     })
-  })
-  .then(res => res.json())
-  .then(res => {
+})
+.then(res => res.json())
+.then(data => {
+    const status = document.getElementById("status");
 
-    document.getElementById("scanBox").style.display = "none";
-    document.getElementById("resultBox").style.display = "block";
-
-    if (res.status === "success") {
-      status.className = "badge success";
-      status.innerText = "VERIFIED";
-    } else if (res.status === "failed") {
-      status.className = "badge failed";
-      status.innerText = "FAILED";
+    if(data.status === "success"){
+        status.innerHTML = "✅ Verification Successful!";
     } else {
-      status.className = "badge failed";
-      status.innerText = "SERVER ERROR ❌";
+        status.innerHTML = "❌ " + data.reason;
     }
-
-  })
-  .catch(() => {
-    document.getElementById("scanBox").style.display = "none";
-    document.getElementById("resultBox").style.display = "block";
-
-    status.className = "badge failed";
-    status.innerText = "SERVER ERROR ❌";
-  });
-}
-
-function closeApp() {
-  tg.close();
-}
+})
+.catch(() => {
+    document.getElementById("status").innerHTML = "❌ Verification Failed";
+});
