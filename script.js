@@ -59,7 +59,7 @@ async function verify() {
             return
         }
 
-        let res = await fetch("https://YOUR_RAILWAY_URL/verify", {
+        let res = await fetch("https://web-production-155.up.railway.app/verify", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
