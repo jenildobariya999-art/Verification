@@ -12,38 +12,50 @@ const params = new URLSearchParams(window.location.search);
 const user_id = params.get("id");
 const token = params.get("token");
 
-// Fingerprint basic
-function getFingerprint() {
-    return navigator.userAgent + 
-           screen.width + 
-           screen.height + 
-           navigator.platform;
+// 🔐 REAL fingerprint (advanced)
+async function getFingerprint() {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    ctx.textBaseline = "top";
+    ctx.font = "14px Arial";
+    ctx.fillText("fingerprint", 2, 2);
+
+    const canvasData = canvas.toDataURL();
+
+    return navigator.userAgent +
+           navigator.platform +
+           screen.width + screen.height +
+           canvasData;
 }
 
-const fingerprint = getFingerprint();
+(async () => {
+    const fingerprint = await getFingerprint();
 
-fetch("https://web-production-155.up.railway.app/verify", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        user_id: user_id,
-        token: token,
-        fingerprint: fingerprint
+    fetch("https://web-production-155.up.railway.app/verify", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user_id: user_id,
+            token: token,
+            fingerprint: fingerprint
+        })
     })
-})
-.then(res => res.json())
-.then(data => {
-    if(data.status === "success"){
-        document.getElementById("status").innerHTML = "✅ Verified Successfully!";
-    } else {
-        document.getElementById("status").innerHTML = "❌ " + data.reason;
-    }
-})
-.catch(err => {
-    document.getElementById("status").innerHTML = "⚠️ Server Error!";
-});
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === "success"){
+            document.getElementById("status").innerHTML = "✅ Verification Successful!";
+        } else {
+            document.getElementById("status").innerHTML = "❌ " + data.reason;
+        }
+    })
+    .catch(() => {
+        // ❗ SERVER ERROR HATA DIYA
+        document.getElementById("status").innerHTML = "❌ Verification Failed";
+    });
+
+})();
 </script>
 
 </body>
