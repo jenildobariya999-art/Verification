@@ -1,9 +1,7 @@
 body {
-    margin: 0;
-    padding: 0;
     background: #0f172a;
     color: white;
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,13 +9,8 @@ body {
 }
 
 .box {
-    text-align: center;
     background: #1e293b;
-    padding: 40px;
+    padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-}
-
-h2 {
-    font-size: 22px;
+    text-align: center;
 }
