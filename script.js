@@ -1,31 +1,36 @@
 const status = document.getElementById("status")
 
+// ✅ TELEGRAM USER ID
 function getUserId() {
-    return new URLSearchParams(window.location.search).get("id")
+    if (window.Telegram && Telegram.WebApp) {
+        return Telegram.WebApp.initDataUnsafe.user.id
+    }
+    return null
 }
 
-// 🔥 SIMPLE BUT STABLE FINGERPRINT
+// 🔥 ADVANCED FINGERPRINT
 function getFingerprint() {
-    return navigator.userAgent + screen.width + screen.height
-}
+    let canvas = document.createElement("canvas")
+    let ctx = canvas.getContext("2d")
+    ctx.textBaseline = "top"
+    ctx.font = "14px Arial"
+    ctx.fillText("device-fingerprint", 2, 2)
 
-// 🌐 IP
-async function getIP() {
-    let res = await fetch("https://api.ipify.org?format=json")
-    let data = await res.json()
-    return data.ip
+    let canvasData = canvas.toDataURL()
+
+    return navigator.userAgent + screen.width + screen.height + canvasData
 }
 
 async function verify() {
     try {
         let user_id = getUserId()
+
         if (!user_id) {
-            status.innerHTML = "❌ Invalid Access"
+            status.innerHTML = "❌ Open inside Telegram"
             return
         }
 
         let fingerprint = getFingerprint()
-        let ip = await getIP()
 
         let res = await fetch("https://web-production-155.up.railway.app/verify", {
             method: "POST",
@@ -34,8 +39,7 @@ async function verify() {
             },
             body: JSON.stringify({
                 user_id,
-                fingerprint,
-                ip
+                fingerprint
             })
         })
 
@@ -47,7 +51,7 @@ async function verify() {
             status.innerHTML = "❌ Verification Failed"
         }
 
-    } catch (e) {
+    } catch {
         status.innerHTML = "❌ Verification Failed"
     }
 }
