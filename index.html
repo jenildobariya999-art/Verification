@@ -5,11 +5,22 @@
 </head>
 <body>
 
-<h2 id="status">🔍 Verifying...</h2>
+<h2 id="status">🔍 Verifying Device...</h2>
 
 <script>
 const params = new URLSearchParams(window.location.search);
 const user_id = params.get("id");
+const token = params.get("token");
+
+// Fingerprint basic
+function getFingerprint() {
+    return navigator.userAgent + 
+           screen.width + 
+           screen.height + 
+           navigator.platform;
+}
+
+const fingerprint = getFingerprint();
 
 fetch("https://web-production-155.up.railway.app/verify", {
     method: "POST",
@@ -17,7 +28,9 @@ fetch("https://web-production-155.up.railway.app/verify", {
         "Content-Type": "application/json"
     },
     body: JSON.stringify({
-        user_id: user_id
+        user_id: user_id,
+        token: token,
+        fingerprint: fingerprint
     })
 })
 .then(res => res.json())
@@ -25,7 +38,7 @@ fetch("https://web-production-155.up.railway.app/verify", {
     if(data.status === "success"){
         document.getElementById("status").innerHTML = "✅ Verified Successfully!";
     } else {
-        document.getElementById("status").innerHTML = "❌ Verification Failed!";
+        document.getElementById("status").innerHTML = "❌ " + data.reason;
     }
 })
 .catch(err => {
