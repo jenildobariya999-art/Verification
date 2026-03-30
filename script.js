@@ -3,21 +3,10 @@ let user = tg.initDataUnsafe.user;
 
 document.getElementById("name").innerText = "👋 " + user.first_name;
 
-let steps = [
-  "Initializing...",
-  "Checking device...",
-  "Analyzing fingerprint...",
-  "Validating request...",
-  "Finalizing..."
-];
-
 let progress = 0;
 let bar = document.getElementById("bar");
 let percent = document.getElementById("percent");
 let status = document.getElementById("status");
-let stepText = document.getElementById("step");
-
-let i = 0;
 
 let interval = setInterval(() => {
 
@@ -31,19 +20,18 @@ let interval = setInterval(() => {
     return;
   }
 
-  progress += 4;
-
+  progress += 5;
   if (progress > 100) progress = 100;
 
   bar.style.width = progress + "%";
   percent.innerText = progress + "%";
 
-  if (i < steps.length) {
-    stepText.innerText = steps[i];
-    i++;
-  }
+}, 150);
 
-}, 180);
+
+// 🔥 IMPORTANT — CHANGE THIS URL
+const API_URL = "https://web-production-155.up.railway.app/verify";
+// 👆 apna REAL Railway URL daal
 
 function getDevice() {
   return JSON.stringify({
@@ -58,7 +46,12 @@ function getDevice() {
 function verify() {
   percent.innerText = "Checking...";
 
-  fetch("https://web-production-155.up.railway.app/verify", {
+  // ⏱ timeout system (5 sec max)
+  let timeout = setTimeout(() => {
+    showFailed("Server not responding");
+  }, 5000);
+
+  fetch(API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -70,27 +63,43 @@ function verify() {
   })
   .then(res => res.json())
   .then(res => {
-
-    document.getElementById("scanBox").style.display = "none";
-    document.getElementById("resultBox").classList.remove("hidden");
+    clearTimeout(timeout);
 
     if (res.status === "success") {
-      status.className = "badge success";
-      status.innerText = "VERIFIED";
-
-      document.getElementById("icon").innerText = "🎉";
-      document.getElementById("title").innerText = "Verification Successful";
-      document.getElementById("desc").innerText = "Your device is approved";
-
+      showSuccess();
     } else {
-      status.className = "badge failed";
-      status.innerText = "FAILED";
-
-      document.getElementById("icon").innerText = "🚫";
-      document.getElementById("title").innerText = "Verification Failed";
-      document.getElementById("desc").innerText = "Device already used";
+      showFailed("Device already used");
     }
+  })
+  .catch(() => {
+    clearTimeout(timeout);
+    showFailed("Network error");
   });
+}
+
+
+function showSuccess() {
+  document.getElementById("scanBox").style.display = "none";
+  document.getElementById("resultBox").classList.remove("hidden");
+
+  status.className = "badge success";
+  status.innerText = "VERIFIED";
+
+  document.getElementById("icon").innerText = "🎉";
+  document.getElementById("title").innerText = "Verification Successful";
+  document.getElementById("desc").innerText = "Device approved";
+}
+
+function showFailed(msg) {
+  document.getElementById("scanBox").style.display = "none";
+  document.getElementById("resultBox").classList.remove("hidden");
+
+  status.className = "badge failed";
+  status.innerText = "FAILED";
+
+  document.getElementById("icon").innerText = "❌";
+  document.getElementById("title").innerText = "Verification Failed";
+  document.getElementById("desc").innerText = msg;
 }
 
 function closeApp() {
