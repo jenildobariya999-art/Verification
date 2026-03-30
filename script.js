@@ -20,7 +20,21 @@ let stepText = document.getElementById("step");
 let i = 0;
 
 let interval = setInterval(() => {
+
+  if (progress >= 100) {
+    progress = 100;
+    bar.style.width = "100%";
+    percent.innerText = "100%";
+
+    clearInterval(interval);
+    verify();
+    return;
+  }
+
   progress += 4;
+
+  if (progress > 100) progress = 100;
+
   bar.style.width = progress + "%";
   percent.innerText = progress + "%";
 
@@ -29,10 +43,6 @@ let interval = setInterval(() => {
     i++;
   }
 
-  if (progress >= 100) {
-    clearInterval(interval);
-    verify();
-  }
 }, 180);
 
 function getDevice() {
